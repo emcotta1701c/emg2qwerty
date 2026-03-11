@@ -322,7 +322,7 @@ class TDSConv_LSTM_CTC_Hybrid(pl.LightningModule):
 
         self.classifier = nn.Sequential(
             # (T, N, num_classes)
-            nn.Linear(num_features, charset().num_classes),
+            nn.Linear(lstm_hidden_size, charset().num_classes),
             nn.LogSoftmax(dim=-1),
         )
         
