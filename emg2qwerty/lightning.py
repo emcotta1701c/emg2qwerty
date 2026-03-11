@@ -283,6 +283,7 @@ class TDSConv_LSTM_CTC_Hybrid(pl.LightningModule):
         kernel_width: int,
         lstm_hidden_size: int,
         lstm_num_layers: int,
+        lstm_bidirectional: bool,
         optimizer: DictConfig,
         lr_scheduler: DictConfig,
         decoder: DictConfig,
@@ -313,13 +314,25 @@ class TDSConv_LSTM_CTC_Hybrid(pl.LightningModule):
             ),
         )
 
-        self.lstm = nn.LSTM(
-            input_size=num_features,
-            hidden_size=lstm_hidden_size,
-            num_layers=lstm_num_layers,
-            batch_first=False,
-            bidirectional=False,
-        )
+        self.lstm = None
+
+        if not lstm_bidirectional:
+            self.lstm = nn.LSTM(
+                input_size=num_features,
+                hidden_size=lstm_hidden_size,
+                num_layers=lstm_num_layers,
+                batch_first=False,
+                bidirectional=False,
+            )
+        else:
+            assert lstm_hidden_size % 2 == 0
+            self.lstm = nn.LSTM(
+                input_size=num_features,
+                hidden_size=int(lstm_hidden_size/2),
+                num_layers=lstm_num_layers,
+                batch_first=False,
+                bidirectional=True,
+            )
 
         self.classifier = nn.Sequential(
             # (T, N, num_classes)
@@ -434,6 +447,7 @@ class TDSConv_GRU_CTC_Hybrid(pl.LightningModule):
         kernel_width: int,
         gru_hidden_size: int,
         gru_num_layers: int,
+        gru_bidirectional: bool,
         optimizer: DictConfig,
         lr_scheduler: DictConfig,
         decoder: DictConfig,
@@ -464,13 +478,23 @@ class TDSConv_GRU_CTC_Hybrid(pl.LightningModule):
             ),
         )
 
-        self.gru = nn.GRU(
-            input_size=num_features,
-            hidden_size=gru_hidden_size,
-            num_layers=gru_num_layers,
-            batch_first=False,
-            bidirectional=False,
-        )
+        if not gru_bidirectional:
+            self.gru = nn.GRU(
+                input_size=num_features,
+                hidden_size=gru_hidden_size,
+                num_layers=gru_num_layers,
+                batch_first=False,
+                bidirectional=False,
+            )
+        else:
+            assert gru_hidden_size % 2 == 0
+            self.gru = nn.GRU(
+                input_size=num_features,
+                hidden_size=int(gru_hidden_size/2),
+                num_layers=gru_num_layers,
+                batch_first=False,
+                bidirectional=False,
+            )
 
         self.classifier = nn.Sequential(
             # (T, N, num_classes)
