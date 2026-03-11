@@ -282,6 +282,7 @@ class TDSConv_LSTM_CTC_Hybrid(pl.LightningModule):
         block_channels: Sequence[int],
         kernel_width: int,
         lstm_hidden_size: int,
+        lstm_num_layers: int,
         optimizer: DictConfig,
         lr_scheduler: DictConfig,
         decoder: DictConfig,
@@ -315,7 +316,7 @@ class TDSConv_LSTM_CTC_Hybrid(pl.LightningModule):
         self.lstm = nn.LSTM(
             input_size=num_features,
             hidden_size=lstm_hidden_size,
-            num_layers=1,
+            num_layers=lstm_num_layers,
             batch_first=False,
             bidirectional=False,
         )
