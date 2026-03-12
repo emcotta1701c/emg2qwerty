@@ -3,8 +3,8 @@ defaults:
   - transforms: log_spectrogram
 #  - model: tds_conv_ctc
 #  - model: tds_conv_lstm_ctc
-  - model: tds_conv_gru_ctc
-#  - model: tds_conv_lstm_ctc
+#  - model: tds_conv_gru_ctc
+  - model: tds_conv_transformer_ctc
   - optimizer: adam
   - lr_scheduler: linear_warmup_cosine_annealing
   - decoder: ctc_greedy
