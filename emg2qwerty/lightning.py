@@ -639,10 +639,10 @@ class TDSConv_Transformer_CTC_Hybrid(pl.LightningModule):
         )
 
         self.proj = nn.Linear(num_features, transformer_hidden_size)
-        encoder_layer = nn.TransformerEncoderLayer(d_model=transformer_hidden_size,
-                                                    nhead=8,
-                                                    dim_feedforward=1024,
-                                                    dropout=0)
+        encoder_layer = nn.TransformerEncoder(d_model=transformer_hidden_size,
+                                            nhead=8,
+                                            dim_feedforward=1024,
+                                            dropout=0)
         # Dropout set to 0 for consistent training against LSTM and GRU
         # 2048 is default, but 1024 2-4x larger than num_features = 256
         self.transformer_encoder = nn.TransformerEncoder(
