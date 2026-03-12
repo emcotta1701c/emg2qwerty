@@ -493,7 +493,7 @@ class TDSConv_GRU_CTC_Hybrid(pl.LightningModule):
                 hidden_size=int(gru_hidden_size/2),
                 num_layers=gru_num_layers,
                 batch_first=False,
-                bidirectional=False,
+                bidirectional=True,
             )
 
         self.classifier = nn.Sequential(
