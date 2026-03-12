@@ -5,7 +5,7 @@ module:
   mlp_features: [384]
   block_channels: [24, 24, 24, 24]
   kernel_width: 32  # Total temporal receptive field of 125 samples given 4 layers
-  lstm_hidden_size: 256
+  lstm_hidden_size: 512
   lstm_num_layers: 2
   lstm_bidirectional: True
 
