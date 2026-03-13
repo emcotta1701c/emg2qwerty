@@ -535,7 +535,7 @@ class WindowedEMGDataset(torch.utils.data.Dataset):
         emg = self.transform(window)
         assert torch.is_tensor(emg)
 
-        print('\nchecking num_channels...\n')
+        # print('\nchecking num_channels...\n')
         if self.num_channels < emg.shape[2]:
             # print('inside of num_channels if')
             # print('shape of emg:', emg.shape)
