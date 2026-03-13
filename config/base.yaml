@@ -20,7 +20,7 @@ monitor_metric: val/CER
 monitor_mode: min
 
 # Number of channels to include
-num_channels: 1
+num_channels: 16
 
 trainer:
   accelerator: gpu
