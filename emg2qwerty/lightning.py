@@ -42,6 +42,7 @@ class WindowedEMGDataModule(pl.LightningDataModule):
         train_transform: Transform[np.ndarray, torch.Tensor],
         val_transform: Transform[np.ndarray, torch.Tensor],
         test_transform: Transform[np.ndarray, torch.Tensor],
+        num_channels: int = 16,
     ) -> None:
         super().__init__()
 
@@ -59,6 +60,8 @@ class WindowedEMGDataModule(pl.LightningDataModule):
         self.val_transform = val_transform
         self.test_transform = test_transform
 
+        self.num_channels = num_channels
+
     def setup(self, stage: str | None = None) -> None:
         self.train_dataset = ConcatDataset(
             [
@@ -68,6 +71,7 @@ class WindowedEMGDataModule(pl.LightningDataModule):
                     window_length=self.window_length,
                     padding=self.padding,
                     jitter=True,
+                    num_channels=self.num_channels,
                 )
                 for hdf5_path in self.train_sessions
             ]
@@ -80,6 +84,7 @@ class WindowedEMGDataModule(pl.LightningDataModule):
                     window_length=self.window_length,
                     padding=self.padding,
                     jitter=False,
+                    num_channels=self.num_channels,
                 )
                 for hdf5_path in self.val_sessions
             ]
@@ -94,6 +99,7 @@ class WindowedEMGDataModule(pl.LightningDataModule):
                     window_length=None,
                     padding=(0, 0),
                     jitter=False,
+                    num_channels=self.num_channels,
                 )
                 for hdf5_path in self.test_sessions
             ]
@@ -136,7 +142,6 @@ class WindowedEMGDataModule(pl.LightningDataModule):
             persistent_workers=True,
         )
 
-
 class TDSConvCTCModule(pl.LightningModule):
     NUM_BANDS: ClassVar[int] = 2
     ELECTRODE_CHANNELS: ClassVar[int] = 16
@@ -169,6 +174,7 @@ class TDSConvCTCModule(pl.LightningModule):
             ),
             # (T, N, num_features)
             nn.Flatten(start_dim=2),
+            
             TDSConvEncoder(
                 num_features=num_features,
                 block_channels=block_channels,

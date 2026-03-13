@@ -19,6 +19,9 @@ checkpoint: null  # Optional path to checkpoint file
 monitor_metric: val/CER
 monitor_mode: min
 
+# Number of channels to include
+num_channels: 12
+
 trainer:
   accelerator: gpu
   devices: 1

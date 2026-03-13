@@ -452,6 +452,41 @@ class WindowedEMGDataset(torch.utils.data.Dataset):
     jitter: bool = False
     transform: Transform[np.ndarray, torch.Tensor] = field(default_factory=ToTensor)
 
+    num_channels: int = 16
+
+    """
+    def random_channel_mask(self, emg: torch.Tensor) -> torch.Tensor:
+        # emg shape: (T, bands, channels, freq)
+
+        total_channels = emg.shape[2]
+
+        if self.num_channels >= total_channels:
+            return emg
+
+        keep = torch.randperm(total_channels)[:self.num_channels]
+
+        mask = torch.zeros(total_channels, device=emg.device)
+        mask[keep] = 1
+
+        mask = mask.view(1, 1, total_channels, 1)
+
+        return emg * mask
+    """
+
+    def deterministic_channel_mask(self, inputs):
+
+        total_channels = inputs.shape[2]
+
+        if self.num_channels >= total_channels:
+            return inputs
+
+        mask = torch.zeros(total_channels)
+        mask[:self.num_channels] = 1
+
+        mask = mask.view(1,1,total_channels,1)
+
+        return inputs * mask
+
     def __post_init__(
         self,
         window_length: int | None,
@@ -499,6 +534,10 @@ class WindowedEMGDataset(torch.utils.data.Dataset):
         # Extract EMG tensor corresponding to the window.
         emg = self.transform(window)
         assert torch.is_tensor(emg)
+
+        if self.num_channels < emg.shape[2]:
+            emg = self.deterministic_channel_mask(emg)
+            # emg = self.random_channel_mask(emg)
 
         # Extract labels corresponding to the original (un-padded) window.
         timestamps = window[EMGSessionData.TIMESTAMPS]
