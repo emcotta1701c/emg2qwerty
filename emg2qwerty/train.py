@@ -84,6 +84,7 @@ def main(config: DictConfig):
         val_transform=_build_transform(config.transforms.val),
         test_transform=_build_transform(config.transforms.test),
         _convert_="object",
+        num_channels=config.num_channels,
     )
 
     # Instantiate callbacks

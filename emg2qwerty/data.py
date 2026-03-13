@@ -535,9 +535,16 @@ class WindowedEMGDataset(torch.utils.data.Dataset):
         emg = self.transform(window)
         assert torch.is_tensor(emg)
 
+        print('\nchecking num_channels...\n')
         if self.num_channels < emg.shape[2]:
+            print('inside of num_channels if')
+            print('shape of emg:', emg.shape)
             emg = self.deterministic_channel_mask(emg)
             # emg = self.random_channel_mask(emg)
+        else:
+            print('num_channels error')
+            print('num_channels:', self.num_channels)
+            print('shape of emg:', emg.shape)
 
         # Extract labels corresponding to the original (un-padded) window.
         timestamps = window[EMGSessionData.TIMESTAMPS]
